@@ -1,9 +1,9 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useState } from 'react';
-import { BLENDER_PROJECTS } from '../../data/portfolioData';
-import { BlenderModelPreview } from '../3d/BlenderModelPreview';
-import { soundEffects } from '../hud/SoundEffects';
-import { X, Box, Cpu, Layers, Sparkles, RotateCw, FileCode, Flame, CheckCircle2 } from 'lucide-react';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { useState } from 'https://esm.sh/react@18.3.1';
+import { BLENDER_PROJECTS } from '../../data/portfolioData.js';
+import { BlenderModelPreview } from '../3d/BlenderModelPreview.js';
+import { soundEffects } from '../hud/SoundEffects.js';
+import { X, Box, Cpu, Layers, Sparkles, RotateCw, FileCode, Flame, CheckCircle2 } from 'https://esm.sh/lucide-react@0.454.0';
 export const BlenderFoundryModal = ({ onClose }) => {
     const [selectedModelId, setSelectedModelId] = useState('football-3d');
     const [viewMode, setViewMode] = useState('rendered');

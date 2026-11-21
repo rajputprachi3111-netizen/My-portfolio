@@ -1,7 +1,7 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useState, useEffect } from 'react';
-import { SYSTEM_INFO } from '../../data/portfolioData';
-import { Activity, ShieldCheck, Radio, ChevronDown, ChevronUp } from 'lucide-react';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { useState, useEffect } from 'https://esm.sh/react@18.3.1';
+import { SYSTEM_INFO } from '../../data/portfolioData.js';
+import { Activity, ShieldCheck, Radio, ChevronDown, ChevronUp } from 'https://esm.sh/lucide-react@0.454.0';
 export const TelemetryWidget = ({ activeSection }) => {
     const [fps, setFps] = useState(60);
     const [collapsed, setCollapsed] = useState(true);

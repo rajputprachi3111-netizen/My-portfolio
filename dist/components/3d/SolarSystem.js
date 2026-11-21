@@ -1,14 +1,14 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import React, { useRef, useEffect } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
-import * as THREE from 'three';
-import { PLANET_CONFIGS } from '../../data/portfolioData';
-import { Starfield } from './Starfield';
-import { Sun } from './Sun';
-import { OrbitPath } from './OrbitPath';
-import { Planet } from './Planet';
-import { soundEffects } from '../hud/SoundEffects';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import React, { useRef, useEffect } from 'https://esm.sh/react@18.3.1';
+import { Canvas, useFrame, useThree } from 'https://esm.sh/@react-three/fiber@8.17.10?external=react,react-dom,three';
+import { OrbitControls } from 'https://esm.sh/@react-three/drei@9.117.0?external=react,react-dom,three,@react-three/fiber';
+import * as THREE from 'https://esm.sh/three@0.168.0';
+import { PLANET_CONFIGS } from '../../data/portfolioData.js';
+import { Starfield } from './Starfield.js';
+import { Sun } from './Sun.js';
+import { OrbitPath } from './OrbitPath.js';
+import { Planet } from './Planet.js';
+import { soundEffects } from '../hud/SoundEffects.js';
 // Camera Director for smooth sci-fi zoom & framing transitions
 const CameraDirector = ({ activeSection }) => {
     const { camera } = useThree();

@@ -1,0 +1,8 @@
+[build]
+  publish = "dist"
+  command = "node build.mjs"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

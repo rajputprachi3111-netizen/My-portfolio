@@ -1,9 +1,9 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useState } from 'react';
-import { SOCIAL_LINKS } from '../../data/portfolioData';
-import { soundEffects } from '../hud/SoundEffects';
-import confetti from 'canvas-confetti';
-import { X, Send, Linkedin, Github, Twitter, Instagram, Camera, MessageCircle, MessageSquare, Radio, CheckCircle, ExternalLink, Shield, Terminal } from 'lucide-react';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { useState } from 'https://esm.sh/react@18.3.1';
+import { SOCIAL_LINKS } from '../../data/portfolioData.js';
+import { soundEffects } from '../hud/SoundEffects.js';
+import confetti from 'https://esm.sh/canvas-confetti@1.9.4';
+import { X, Send, Linkedin, Github, Twitter, Instagram, Camera, MessageCircle, MessageSquare, Radio, CheckCircle, ExternalLink, Shield, Terminal } from 'https://esm.sh/lucide-react@0.454.0';
 export const CommsTerminal = ({ onClose }) => {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
     const [isTransmitting, setIsTransmitting] = useState(false);

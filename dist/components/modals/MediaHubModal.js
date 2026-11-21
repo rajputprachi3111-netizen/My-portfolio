@@ -1,7 +1,7 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { MEDIA_CHANNELS } from '../../data/portfolioData';
-import { soundEffects } from '../hud/SoundEffects';
-import { X, Radio, Youtube, Tv, Signal, ExternalLink, Wifi } from 'lucide-react';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { MEDIA_CHANNELS } from '../../data/portfolioData.js';
+import { soundEffects } from '../hud/SoundEffects.js';
+import { X, Radio, Youtube, Tv, Signal, ExternalLink, Wifi } from 'https://esm.sh/lucide-react@0.454.0';
 export const MediaHubModal = ({ onClose }) => {
     return (_jsx("div", { className: "fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-void-950/80 backdrop-blur-md animate-fade-in", children: _jsxs("div", { className: "hud-panel-violet w-full sm:max-w-3xl max-h-[90vh] sm:max-h-[85vh] rounded-t-2xl sm:rounded-2xl border border-violet-500/40 shadow-glow-violet flex flex-col overflow-hidden", children: [_jsxs("div", { className: "p-4 sm:p-5 border-b border-violet-950/80 flex items-center justify-between bg-void-950/90", children: [_jsxs("div", { className: "flex items-center gap-3", children: [_jsx("div", { className: "p-2 rounded-lg bg-violet-500/20 border border-violet-500/50 text-violet-400", children: _jsx(Radio, { className: "w-5 h-5 animate-pulse" }) }), _jsxs("div", { children: [_jsxs("div", { className: "flex items-center gap-2", children: [_jsx("span", { className: "text-[10px] font-mono tracking-widest text-violet-400 uppercase", children: "SECTOR PULSAR-III // SUBSPACE BROADCAST ARRAY" }), _jsx("span", { className: "px-1.5 py-0.2 bg-violet-500/20 text-violet-300 text-[9px] font-mono rounded font-bold", children: "SATELLITE SYNC" })] }), _jsx("h2", { className: "text-lg sm:text-xl font-orbitron font-bold text-white tracking-wide", children: "Subspace Broadcasts & Media Hub" })] })] }), _jsx("button", { onClick: () => {
                                 soundEffects.playBeep(640, 0.08);

@@ -1,8 +1,8 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Html } from '@react-three/drei';
-import * as THREE from 'three';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { useRef } from 'https://esm.sh/react@18.3.1';
+import { useFrame } from 'https://esm.sh/@react-three/fiber@8.17.10?external=react,react-dom,three';
+import { Html } from 'https://esm.sh/@react-three/drei@9.117.0?external=react,react-dom,three,@react-three/fiber';
+import * as THREE from 'https://esm.sh/three@0.168.0';
 export const Sun = ({ onSelect, isHovered, onHover }) => {
     const meshRef = useRef(null);
     const coronaRef = useRef(null);

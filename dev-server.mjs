@@ -19,64 +19,29 @@ const MIME_TYPES = {
   '.json': 'application/json'
 };
 
-const BARE_IMPORTS = {
-  'react': 'https://esm.sh/react@18.3.1',
-  'react-dom': 'https://esm.sh/react-dom@18.3.1',
-  'react-dom/client': 'https://esm.sh/react-dom@18.3.1/client',
-  'react/jsx-runtime': 'https://esm.sh/react@18.3.1/jsx-runtime',
-  'three': 'https://esm.sh/three@0.168.0',
-  '@react-three/fiber': 'https://esm.sh/@react-three/fiber@8.17.10?external=react,react-dom,three',
-  '@react-three/drei': 'https://esm.sh/@react-three/drei@9.117.0?external=react,react-dom,three,@react-three/fiber',
-  'lucide-react': 'https://esm.sh/lucide-react@0.454.0',
-  'canvas-confetti': 'https://esm.sh/canvas-confetti@1.9.4'
-};
-
-function transformJs(content) {
-  // 1. Replace bare specifiers
-  let transformed = content;
-  for (const [bare, target] of Object.entries(BARE_IMPORTS)) {
-    // Replace import ... from 'bare' or "bare"
-    const regex = new RegExp(`(from\\s+['"])${bare}(['"])`, 'g');
-    transformed = transformed.replace(regex, `$1${target}$2`);
-  }
-
-  // 2. Append .js to local relative imports without extension
-  transformed = transformed.replace(/(from\s+['"]\.[^'"]+?)(['"])/g, (match, p1, p2) => {
-    if (p1.endsWith('.js') || p1.endsWith('.css') || p1.endsWith('.json')) {
-      return match;
-    }
-    return `${p1}.js${p2}`;
-  });
-
-  return transformed;
-}
-
 const server = http.createServer((req, res) => {
   const urlObj = new URL(req.url, `http://${req.headers.host}`);
   let pathname = decodeURIComponent(urlObj.pathname);
 
-  // Default to index.html
-  if (pathname === '/' || pathname === '/index.html') {
-    const indexPath = path.join(__dirname, 'index.html');
-    if (fs.existsSync(indexPath)) {
-      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-      res.end(fs.readFileSync(indexPath));
-      return;
-    }
+  // 1. Direct match in dist
+  let filePath = path.join(__dirname, 'dist', pathname === '/' ? 'index.html' : pathname);
+
+  // 2. If not found in dist, check public
+  if (!fs.existsSync(filePath)) {
+    filePath = path.join(__dirname, 'public', pathname);
   }
 
-  // Check public folder first
-  let filePath = path.join(__dirname, 'public', pathname);
-  if (!fs.existsSync(filePath)) {
-    // Check dist folder
-    filePath = path.join(__dirname, 'dist', pathname);
-  }
+  // 3. If extension omitted, try .js in dist
   if (!fs.existsSync(filePath) && !pathname.endsWith('.js')) {
-    // Try adding .js
     const tryJs = path.join(__dirname, 'dist', pathname + '.js');
     if (fs.existsSync(tryJs)) {
       filePath = tryJs;
     }
+  }
+
+  // 4. SPA fallback: if not a file, serve dist/index.html
+  if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+    filePath = path.join(__dirname, 'dist', 'index.html');
   }
 
   if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
@@ -87,13 +52,7 @@ const server = http.createServer((req, res) => {
       'Content-Type': mime,
       'Access-Control-Allow-Origin': '*'
     });
-
-    if (ext === '.js' || ext === '.mjs') {
-      const content = fs.readFileSync(filePath, 'utf-8');
-      res.end(transformJs(content));
-    } else {
-      fs.createReadStream(filePath).pipe(res);
-    }
+    fs.createReadStream(filePath).pipe(res);
     return;
   }
 

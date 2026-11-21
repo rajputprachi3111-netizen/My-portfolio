@@ -1,8 +1,8 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useState } from 'react';
-import { WEB_PROJECTS } from '../../data/portfolioData';
-import { soundEffects } from '../hud/SoundEffects';
-import { X, ExternalLink, Github, Layers, Sparkles, Terminal, Filter } from 'lucide-react';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { useState } from 'https://esm.sh/react@18.3.1';
+import { WEB_PROJECTS } from '../../data/portfolioData.js';
+import { soundEffects } from '../hud/SoundEffects.js';
+import { X, ExternalLink, Github, Layers, Sparkles, Terminal, Filter } from 'https://esm.sh/lucide-react@0.454.0';
 export const WebProjectsModal = ({ onClose }) => {
     const [selectedCategory, setSelectedCategory] = useState('ALL');
     const categories = ['ALL', '3D / AI', 'Full-Stack', 'Game Dev', 'Web App', 'Portfolio'];

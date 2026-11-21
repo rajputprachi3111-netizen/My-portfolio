@@ -1,7 +1,7 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { useMemo, useRef } from 'https://esm.sh/react@18.3.1';
+import { useFrame } from 'https://esm.sh/@react-three/fiber@8.17.10?external=react,react-dom,three';
+import * as THREE from 'https://esm.sh/three@0.168.0';
 export const Starfield = ({ count = 3500 }) => {
     const pointsRef = useRef(null);
     const { positions, colors } = useMemo(() => {

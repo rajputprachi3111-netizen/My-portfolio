@@ -1,8 +1,8 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useState } from 'react';
-import { SYSTEM_INFO } from '../../data/portfolioData';
-import { soundEffects } from './SoundEffects';
-import { Volume2, VolumeX, BatteryCharging, Zap, HelpCircle } from 'lucide-react';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { useState } from 'https://esm.sh/react@18.3.1';
+import { SYSTEM_INFO } from '../../data/portfolioData.js';
+import { soundEffects } from './SoundEffects.js';
+import { Volume2, VolumeX, BatteryCharging, Zap, HelpCircle } from 'https://esm.sh/lucide-react@0.454.0';
 export const HudOverlay = ({ activeSection, onSelectSection, is2DMode, onToggle2DMode, onOpenHelp }) => {
     const [audioEnabled, setAudioEnabled] = useState(false);
     const handleToggleAudio = () => {

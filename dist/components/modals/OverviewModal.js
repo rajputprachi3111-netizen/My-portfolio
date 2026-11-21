@@ -1,7 +1,7 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { SYSTEM_INFO } from '../../data/portfolioData';
-import { soundEffects } from '../hud/SoundEffects';
-import { X, Sun, Compass, Cpu, Shield, ArrowRight } from 'lucide-react';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { SYSTEM_INFO } from '../../data/portfolioData.js';
+import { soundEffects } from '../hud/SoundEffects.js';
+import { X, Sun, Compass, Cpu, Shield, ArrowRight } from 'https://esm.sh/lucide-react@0.454.0';
 export const OverviewModal = ({ onClose, onSelectSection }) => {
     const skills = [
         { category: '3D & Graphics', items: ['Three.js', 'WebGL', 'Blender (Cycles/EEVEE)', 'GLTF/GLB Pipelines', 'Geometry Nodes'] },

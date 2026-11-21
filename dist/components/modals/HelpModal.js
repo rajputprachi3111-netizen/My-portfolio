@@ -1,6 +1,6 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { soundEffects } from '../hud/SoundEffects';
-import { X, HelpCircle, Compass, MousePointer, Smartphone, Zap } from 'lucide-react';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { soundEffects } from '../hud/SoundEffects.js';
+import { X, HelpCircle, Compass, MousePointer, Smartphone, Zap } from 'https://esm.sh/lucide-react@0.454.0';
 export const HelpModal = ({ onClose }) => {
     return (_jsx("div", { className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-void-950/80 backdrop-blur-md animate-fade-in", children: _jsxs("div", { className: "hud-panel w-full max-w-md rounded-2xl border border-[#00F0FF]/40 shadow-glow-cyan p-5", children: [_jsxs("div", { className: "flex items-center justify-between border-b border-slate-800 pb-3 mb-4", children: [_jsxs("div", { className: "flex items-center gap-2 text-xs font-mono text-[#00F0FF] font-bold", children: [_jsx(HelpCircle, { className: "w-4 h-4" }), " ORBITAL TELEMETRY MANUAL"] }), _jsx("button", { onClick: () => {
                                 soundEffects.playBeep(640, 0.08);

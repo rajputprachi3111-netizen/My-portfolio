@@ -1,6 +1,6 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { soundEffects } from './SoundEffects';
-import { Sun, Globe, Box, Radio, Send, Compass } from 'lucide-react';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { soundEffects } from './SoundEffects.js';
+import { Sun, Globe, Box, Radio, Send, Compass } from 'https://esm.sh/lucide-react@0.454.0';
 export const NavigationPills = ({ activeSection, onSelectSection }) => {
     const navItems = [
         {

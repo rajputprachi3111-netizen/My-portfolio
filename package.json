@@ -5,9 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node dev-server.mjs",
-    "build:css": "node node_modules/tailwindcss/lib/cli.js -i src/index.css -o public/style.css --minify",
-    "build:ts": "node node_modules/typescript/bin/tsc",
-    "build": "npm run build:css && npm run build:ts",
+    "build": "node build.mjs",
     "start": "node dev-server.mjs",
     "preview": "node dev-server.mjs"
   },

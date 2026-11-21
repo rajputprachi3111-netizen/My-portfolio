@@ -1,7 +1,7 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { jsx as _jsx, jsxs as _jsxs } from "https://esm.sh/react@18.3.1/jsx-runtime";
+import { useRef, useMemo } from 'https://esm.sh/react@18.3.1';
+import { Canvas, useFrame } from 'https://esm.sh/@react-three/fiber@8.17.10?external=react,react-dom,three';
+import { OrbitControls } from 'https://esm.sh/@react-three/drei@9.117.0?external=react,react-dom,three,@react-three/fiber';
 const ProceduralFootball = ({ wireframe, viewMode }) => {
     const groupRef = useRef(null);
     useFrame((_, delta) => {
