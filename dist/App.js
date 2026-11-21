@@ -1,0 +1,21 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useState } from 'react';
+import { SolarSystem } from './components/3d/SolarSystem';
+import { LowPower2DView } from './components/2d/LowPower2DView';
+import { HudOverlay } from './components/hud/HudOverlay';
+import { NavigationPills } from './components/hud/NavigationPills';
+import { TelemetryWidget } from './components/hud/TelemetryWidget';
+import { WebProjectsModal } from './components/modals/WebProjectsModal';
+import { BlenderFoundryModal } from './components/modals/BlenderFoundryModal';
+import { MediaHubModal } from './components/modals/MediaHubModal';
+import { CommsTerminal } from './components/modals/CommsTerminal';
+import { OverviewModal } from './components/modals/OverviewModal';
+import { HelpModal } from './components/modals/HelpModal';
+export const App = () => {
+    const [activeSection, setActiveSection] = useState(null);
+    const [hoveredSection, setHoveredSection] = useState(null);
+    const [is2DMode, setIs2DMode] = useState(false);
+    const [isHelpOpen, setIsHelpOpen] = useState(false);
+    return (_jsxs("main", { className: "relative w-screen h-screen overflow-hidden bg-[#05070D] text-[#F8FAFC]", children: [!is2DMode ? (_jsx(SolarSystem, { activeSection: activeSection, onSelectSection: (section) => setActiveSection(section), hoveredSection: hoveredSection, onHoverSection: (section) => setHoveredSection(section) })) : (_jsx(LowPower2DView, { onSelectSection: (section) => setActiveSection(section), onToggle2DMode: () => setIs2DMode(false) })), _jsx(HudOverlay, { activeSection: activeSection, onSelectSection: (section) => setActiveSection(section), is2DMode: is2DMode, onToggle2DMode: () => setIs2DMode(!is2DMode), onOpenHelp: () => setIsHelpOpen(true) }), !is2DMode && _jsx(TelemetryWidget, { activeSection: activeSection }), _jsx(NavigationPills, { activeSection: activeSection, onSelectSection: (section) => setActiveSection(section) }), activeSection === 'overview' && (_jsx(OverviewModal, { onClose: () => setActiveSection(null), onSelectSection: (section) => setActiveSection(section) })), activeSection === 'web' && (_jsx(WebProjectsModal, { onClose: () => setActiveSection(null) })), activeSection === 'blender' && (_jsx(BlenderFoundryModal, { onClose: () => setActiveSection(null) })), activeSection === 'media' && (_jsx(MediaHubModal, { onClose: () => setActiveSection(null) })), activeSection === 'contact' && (_jsx(CommsTerminal, { onClose: () => setActiveSection(null) })), isHelpOpen && _jsx(HelpModal, { onClose: () => setIsHelpOpen(false) })] }));
+};
+export default App;
