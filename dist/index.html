@@ -1,40 +1,2258 @@
-<!doctype html>
-<html lang="en" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="theme-color" content="#05070D" />
-    <title>The angry east indian's work | Sci-Fi Developer & 3D Artist Portfolio</title>
-    
-    <!-- Google Fonts: Orbitron, Inter, JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- Compiled Sci-Fi HUD Stylesheet -->
-    <link rel="stylesheet" href="/style.css" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#05070F">
+  <meta name="description" content="Prachi Rajput - Software Developer, AI Builder & 3D Creator Portfolio featuring an interactive 3D/2.5D Solar System navigation interface.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='%2305070F' stroke='%2338BDF8' stroke-width='4'/><circle cx='50' cy='50' r='20' fill='%23F59E0B'/><circle cx='80' cy='35' r='8' fill='%2338BDF8'/></svg>">
+  <title>Prachi Rajput // Software Developer & AI Builder // Cosmos OS</title>
 
-    <!-- Standard HTML5 Browser Import Map -->
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.3.1",
-        "react-dom": "https://esm.sh/react-dom@18.3.1",
-        "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
-        "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
-        "three": "https://esm.sh/three@0.168.0",
-        "@react-three/fiber": "https://esm.sh/@react-three/fiber@8.17.10?external=react,react-dom,three",
-        "@react-three/drei": "https://esm.sh/@react-three/drei@9.117.0?external=react,react-dom,three,@react-three/fiber",
-        "lucide-react": "https://esm.sh/lucide-react@0.454.0",
-        "canvas-confetti": "https://esm.sh/canvas-confetti@1.9.4"
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================================
+       1. CSS Custom Properties & Reset
+       ===================================================================== */
+    :root {
+      --bg-void: #05070F;
+      --bg-panel: rgba(13, 18, 36, 0.78);
+      --bg-panel-solid: #0d1224;
+      --bg-panel-hover: rgba(22, 30, 58, 0.88);
+      --border-hud: rgba(255, 255, 255, 0.12);
+      --border-cyan: rgba(56, 189, 248, 0.35);
+      --border-amber: rgba(245, 158, 11, 0.4);
+
+      --color-text-main: #F8FAFC;
+      --color-text-muted: #94A3B8;
+      --color-text-dim: #64748B;
+
+      --cyan-telemetry: #38BDF8;
+      --cyan-bright: #00F0FF;
+      --amber-solar: #F59E0B;
+      --amber-warm: #F97316;
+      --emerald-comms: #10B981;
+      --violet-subspace: #8B5CF6;
+      --crimson-mars: #EF4444;
+
+      --font-display: 'Space Grotesk', -apple-system, sans-serif;
+      --font-body: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --drawer-width: 440px;
+      --hud-top-height: 64px;
+      --hud-bottom-height: 68px;
+
+      --orbit-speed-mult: 1;
+      --zoom-level: 1;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-void);
+      color: var(--color-text-main);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body.cosmos-active {
+      overflow: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(5, 7, 15, 0.9);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.35);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--cyan-bright);
+    }
+
+    /* Utility & Typography */
+    .font-display { font-family: var(--font-display); }
+    .font-mono { font-family: var(--font-mono); }
+    .font-body { font-family: var(--font-body); }
+
+    .glow-cyan {
+      text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+    }
+    .glow-amber {
+      text-shadow: 0 0 14px rgba(245, 158, 11, 0.7);
+    }
+
+    /* Glassmorphic Panels */
+    .glass-hud {
+      background: var(--bg-panel);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-hud);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+    }
+
+    /* =====================================================================
+       2. Background Animated Starfield Canvas
+       ===================================================================== */
+    #starfield-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Subtle Nebula Glow Backdrop */
+    .cosmic-nebula {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background: 
+        radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.04) 0%, transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 15% 85%, rgba(139, 92, 246, 0.04) 0%, transparent 50%);
+    }
+
+    /* =====================================================================
+       3. Top Navigation HUD
+       ===================================================================== */
+    .top-hud {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--hud-top-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 40;
+      background: linear-gradient(180deg, rgba(5, 7, 15, 0.85) 0%, rgba(5, 7, 15, 0.3) 80%, transparent 100%);
+      backdrop-filter: blur(8px);
+    }
+
+    .brand-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--border-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--cyan-bright);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--color-text-main);
+    }
+    .brand-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cyan-telemetry);
+      letter-spacing: 1px;
+    }
+
+    /* Quick Jump Pills */
+    .nav-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(13, 18, 36, 0.65);
+      border: 1px solid var(--border-hud);
+      padding: 4px;
+      border-radius: 9999px;
+    }
+
+    .nav-pill-btn {
+      padding: 6px 14px;
+      border-radius: 9999px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-pill-btn:hover {
+      color: var(--color-text-main);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-pill-btn.active {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--cyan-bright);
+      border: 1px solid var(--border-cyan);
+    }
+
+    /* View Switcher Toggle */
+    .view-switcher {
+      display: flex;
+      align-items: center;
+      background: rgba(13, 18, 36, 0.7);
+      border: 1px solid var(--border-hud);
+      border-radius: 10px;
+      padding: 3px;
+    }
+
+    .view-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .view-btn:hover {
+      color: var(--color-text-main);
+    }
+
+    .view-btn.active {
+      background: var(--cyan-telemetry);
+      color: #05070F;
+      font-weight: 700;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+    }
+
+    .key-badge {
+      font-size: 9px;
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-left: 2px;
+    }
+
+    /* =====================================================================
+       4. Interactive 2.5D / 3D Solar System Viewport (Cosmos View)
+       ===================================================================== */
+    #cosmos-viewport {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      user-select: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    #cosmos-viewport:active {
+      cursor: grabbing;
+    }
+
+    .cosmos-pan-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: center center;
+      will-change: transform;
+    }
+
+    /* Planetary Coordinate Center */
+    .solar-anchor {
+      position: relative;
+      width: 0;
+      height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* --------------------------------
+       The Central Sun
+       -------------------------------- */
+    .sun-entity {
+      position: absolute;
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #FFFBEB 0%, #F59E0B 45%, #D97706 75%, #B45309 100%);
+      box-shadow: 
+        0 0 45px rgba(245, 158, 11, 0.85),
+        0 0 90px rgba(249, 115, 22, 0.45),
+        inset 0 0 20px rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+      animation: sun-pulse 4s infinite ease-in-out;
+    }
+
+    .sun-entity:hover {
+      transform: scale(1.12);
+      box-shadow: 
+        0 0 65px rgba(245, 158, 11, 1),
+        0 0 130px rgba(249, 115, 22, 0.65),
+        inset 0 0 25px rgba(255, 255, 255, 0.8);
+    }
+
+    .sun-corona {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 1px dashed rgba(245, 158, 11, 0.45);
+      animation: spin-slow 20s linear infinite;
+      pointer-events: none;
+    }
+
+    .sun-tag {
+      position: absolute;
+      bottom: -28px;
+      white-space: nowrap;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: #FDE68A;
+      background: rgba(13, 18, 36, 0.85);
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    @keyframes sun-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+    @keyframes spin-slow {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* --------------------------------
+       Orbital Rings & Tracks
+       -------------------------------- */
+    .orbit-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(56, 189, 248, 0.16);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      top: 0;
+      left: 0;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .orbit-ring.highlighted {
+      border-color: rgba(56, 189, 248, 0.65);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+    }
+
+    /* --------------------------------
+       Planets Common
+       -------------------------------- */
+    .planet-carrier {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .planet-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      cursor: pointer;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+      outline: none;
+    }
+
+    .planet-node:hover, .planet-node:focus-visible {
+      transform: translate(-50%, -50%) scale(1.22);
+      z-index: 30;
+    }
+
+    .planet-node:focus-visible {
+      box-shadow: 0 0 0 3px var(--cyan-bright) !important;
+    }
+
+    /* Specific Planet Textures & Glows */
+    /* Planet 1: Mercury (PixelSerpent) */
+    .p-mercury {
+      width: 24px;
+      height: 24px;
+      background: radial-gradient(circle at 35% 35%, #E2E8F0 0%, #94A3B8 50%, #475569 100%);
+      box-shadow: 0 0 15px rgba(148, 163, 184, 0.65);
+    }
+
+    /* Planet 2: Venus (MeshCraft AI) */
+    .p-venus {
+      width: 32px;
+      height: 32px;
+      background: radial-gradient(circle at 35% 35%, #FEF08A 0%, #F59E0B 60%, #B45309 100%);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.7);
+    }
+
+    /* Planet 3: Earth (PlayZone) */
+    .p-earth {
+      width: 36px;
+      height: 36px;
+      background: radial-gradient(circle at 35% 35%, #67E8F9 0%, #0284C7 45%, #0369A1 75%, #082F49 100%);
+      box-shadow: 0 0 22px rgba(2, 132, 199, 0.75);
+    }
+
+    /* Planet 4: Mars (RadZero) */
+    .p-mars {
+      width: 28px;
+      height: 28px;
+      background: radial-gradient(circle at 35% 35%, #FCA5A5 0%, #EF4444 50%, #991B1B 100%);
+      box-shadow: 0 0 18px rgba(239, 68, 68, 0.75);
+    }
+
+    /* Planet 5: Jupiter (Legacy Portfolio v1) */
+    .p-jupiter {
+      width: 50px;
+      height: 50px;
+      background: repeating-linear-gradient(
+        45deg,
+        #FDE68A 0px,
+        #D97706 7px,
+        #B45309 12px,
+        #FDE68A 18px
+      );
+      box-shadow: 0 0 30px rgba(217, 119, 6, 0.75);
+    }
+
+    /* Planet 6: Saturn (3D & Game Dev Studio) */
+    .p-saturn {
+      width: 42px;
+      height: 42px;
+      background: radial-gradient(circle at 35% 35%, #FED7AA 0%, #FB923C 60%, #C2410C 100%);
+      box-shadow: 0 0 25px rgba(251, 146, 60, 0.7);
+      position: relative;
+    }
+
+    .saturn-ring {
+      position: absolute;
+      width: 82px;
+      height: 28px;
+      border-radius: 50%;
+      border: 3.5px solid rgba(253, 186, 116, 0.85);
+      border-top-color: rgba(253, 186, 116, 0.4);
+      transform: rotate(-25deg);
+      pointer-events: none;
+      box-shadow: 0 0 12px rgba(251, 146, 60, 0.4);
+    }
+
+    /* Outermost Satellite */
+    .satellite-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      pointer-events: auto;
+      z-index: 25;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      transition: transform 0.2s ease;
+    }
+    .satellite-node:hover {
+      transform: translate(-50%, -50%) scale(1.3);
+    }
+    .sat-core {
+      width: 14px;
+      height: 14px;
+      background: #FFFFFF;
+      border-radius: 3px;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.9);
+      border: 1px solid var(--cyan-bright);
+    }
+    .sat-panel {
+      width: 10px;
+      height: 6px;
+      background: rgba(56, 189, 248, 0.8);
+      border: 0.5px solid rgba(255, 255, 255, 0.6);
+      border-radius: 1px;
+    }
+
+    /* Orbiting Moons (YouTube Channels) */
+    .moon-carrier {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .moon-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #EF4444;
+      border: 1px solid #FFFFFF;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+      cursor: pointer;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7px;
+      font-weight: 800;
+      color: #FFFFFF;
+      transition: transform 0.2s ease;
+    }
+    .moon-node:hover {
+      transform: translate(-50%, -50%) scale(1.4);
+      z-index: 35;
+    }
+
+    /* Planet Tooltip */
+    #telemetry-tooltip {
+      position: fixed;
+      pointer-events: none;
+      z-index: 60;
+      padding: 8px 12px;
+      border-radius: 8px;
+      opacity: 0;
+      transform: translate(-50%, -100%) scale(0.95);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      white-space: nowrap;
+    }
+    #telemetry-tooltip.visible {
+      opacity: 1;
+      transform: translate(-50%, -120%) scale(1);
+    }
+    .tt-title {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tt-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cyan-telemetry);
+      margin-top: 2px;
+    }
+
+    /* =====================================================================
+       5. Bottom Orbital Control Dock (Cosmos View)
+       ===================================================================== */
+    .bottom-hud-dock {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 9999px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    .dock-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-hud);
+      color: var(--color-text-main);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .dock-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--border-cyan);
+      color: var(--cyan-bright);
+      transform: translateY(-2px);
+    }
+
+    .speed-btn-group {
+      display: flex;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 9999px;
+      border: 1px solid var(--border-hud);
+      padding: 2px;
+    }
+    .speed-pill {
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .speed-pill.active {
+      background: var(--cyan-telemetry);
+      color: #05070F;
+      font-weight: 700;
+    }
+
+    /* =====================================================================
+       6. Structured Grid View (Alternative Scannable Layout)
+       ===================================================================== */
+    #grid-viewport {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      z-index: 10;
+      display: none;
+      padding-top: calc(var(--hud-top-height) + 24px);
+      padding-bottom: 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    #grid-viewport.active {
+      display: block;
+    }
+
+    /* Hero Bio Section */
+    .grid-hero {
+      padding: 40px;
+      border-radius: 24px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .grid-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--border-cyan);
+      color: var(--cyan-bright);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .hero-name {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #FFFFFF 30%, #94A3B8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-title {
+      font-size: 18px;
+      color: var(--cyan-telemetry);
+      font-family: var(--font-mono);
+      margin-bottom: 18px;
+    }
+
+    .hero-bio {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--color-text-muted);
+      max-width: 800px;
+      margin-bottom: 28px;
+    }
+
+    /* Skill Category Badges */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .skill-card {
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .skill-cat {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cyan-telemetry);
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag-item {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--color-text-main);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Project Cards Grid */
+    .section-heading {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    .project-card {
+      border-radius: 18px;
+      padding: 24px;
+      display: flex;
+      flex-col: column;
+      justify-content: space-between;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      position: relative;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-cyan);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.15);
+    }
+
+    .proj-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.12);
+      color: var(--cyan-telemetry);
+      border: 1px solid var(--border-cyan);
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .proj-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text-main);
+      margin-bottom: 8px;
+    }
+
+    .proj-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--color-text-muted);
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-action-primary {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: var(--cyan-telemetry);
+      color: #05070F;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-action-primary:hover {
+      background: var(--cyan-bright);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.6);
+    }
+
+    .btn-action-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-hud);
+      color: var(--color-text-main);
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-action-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* =====================================================================
+       7. Glassmorphic Slide-Over & Bottom-Sheet Drawers
+       ===================================================================== */
+    .drawer-scrim {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .drawer-scrim.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .command-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: var(--drawer-width);
+      max-width: 100vw;
+      height: 100%;
+      background: var(--bg-panel-solid);
+      border-left: 1px solid var(--border-hud);
+      z-index: 55;
+      transform: translate3d(100%, 0, 0);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -15px 0 45px rgba(0, 0, 0, 0.8);
+    }
+    .command-drawer.open {
+      transform: translate3d(0, 0, 0);
+    }
+
+    .drawer-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-hud);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(5, 7, 15, 0.4);
+    }
+
+    .drawer-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .drawer-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .drawer-close-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border-hud);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .drawer-close-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #FFFFFF;
+    }
+
+    .drawer-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    /* Contact Details Section inside Drawer */
+    .copy-email-card {
+      padding: 16px;
+      border-radius: 12px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid var(--border-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 20px;
+    }
+    .copy-email-card:hover {
+      background: rgba(56, 189, 248, 0.14);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+    }
+
+    .social-dock {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .social-link-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-hud);
+      color: var(--color-text-main);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      transition: all 0.2s ease;
+    }
+    .social-link-btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    /* Quick Message Form */
+    .message-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-text-muted);
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: rgba(5, 7, 15, 0.6);
+      border: 1px solid var(--border-hud);
+      color: #FFFFFF;
+      font-family: var(--font-body);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .form-control:focus {
+      border-color: var(--cyan-telemetry);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+    textarea.form-control {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    /* Toast Notification */
+    #hud-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0284C7;
+      color: #FFFFFF;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.4);
+      z-index: 100;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    #hud-toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =====================================================================
+       8. Mobile Orbital Trajectory Timeline (< 768px)
+       ===================================================================== */
+    @media (max-width: 767px) {
+      .top-hud {
+        padding: 0 12px;
+      }
+      .nav-pills {
+        display: none; /* Keep header clean on small screens */
+      }
+
+      /* Transform Cosmos View into Vertical Orbital Spine */
+      #cosmos-viewport {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        min-height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        cursor: default;
+        padding-top: calc(var(--hud-top-height) + 20px);
+        padding-bottom: 90px;
+        display: block;
+      }
+
+      .cosmos-pan-container {
+        position: relative;
+        width: 100%;
+        height: auto;
+        transform: none !important;
+      }
+
+      .solar-anchor {
+        position: relative;
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        padding: 20px 0;
+      }
+
+      /* Glowing Vertical Spine */
+      .solar-anchor::before {
+        content: '';
+        position: absolute;
+        top: 40px;
+        bottom: 40px;
+        left: 50%;
+        width: 2px;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, 
+          rgba(245, 158, 11, 0.7) 0%, 
+          rgba(56, 189, 248, 0.7) 50%, 
+          rgba(139, 92, 246, 0.7) 100%
+        );
+        box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        z-index: 5;
+      }
+
+      /* Hide circular rings on mobile vertical spine */
+      .orbit-ring {
+        display: none !important;
+      }
+
+      .sun-entity {
+        position: relative;
+        margin: 0 auto;
+        z-index: 15;
+      }
+
+      .planet-carrier, .moon-carrier {
+        position: relative !important;
+        transform: none !important;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 60px;
+        z-index: 15;
+      }
+
+      .planet-node {
+        position: relative !important;
+        transform: none !important;
+        min-width: 48px;
+        min-height: 48px;
+      }
+
+      .satellite-node {
+        position: relative !important;
+        transform: none !important;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Mobile Bottom Sheet Drawer */
+      .command-drawer {
+        top: auto;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 82vh;
+        border-radius: 20px 20px 0 0;
+        transform: translate3d(0, 100%, 0);
+        border-left: none;
+        border-top: 1px solid var(--border-hud);
+      }
+      .command-drawer.open {
+        transform: translate3d(0, 0, 0);
       }
     }
-    </script>
-  </head>
-  <body class="bg-[#05070D] text-[#F8FAFC] selection:bg-[#00F0FF]/30 selection:text-white overflow-hidden font-sans antialiased">
-    <div id="root"></div>
-    <!-- Main Application Entry Module -->
-    <script type="module" src="/main.js"></script>
-  </body>
+
+    /* Tablet Scale (768px – 1023px) */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      :root {
+        --zoom-level: 0.72;
+      }
+      .command-drawer {
+        width: 380px;
+      }
+    }
+
+    /* Reduced Motion Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .sun-entity, .sun-corona, .planet-node {
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="cosmos-active">
+
+  <!-- Background Twinkling Canvas & Nebula -->
+  <canvas id="starfield-canvas"></canvas>
+  <div class="cosmic-nebula"></div>
+
+  <!-- Top Navigation HUD -->
+  <header class="top-hud">
+    <a href="#" class="brand-badge" id="btn-brand-home">
+      <div class="brand-icon">PR</div>
+      <div>
+        <div class="brand-title">PRACHI.DEV</div>
+        <div class="brand-sub">COSMOS OS // ORBITAL HUD</div>
+      </div>
+    </a>
+
+    <!-- Center Navigation Pills -->
+    <nav class="nav-pills" aria-label="Celestial Navigation">
+      <button class="nav-pill-btn" id="nav-pill-sun" title="Inspect About Me">
+        <span>☀️</span> Sun: About Me
+      </button>
+      <button class="nav-pill-btn" id="nav-pill-work" title="Inspect Work">
+        <span>🪐</span> Planets: Work
+      </button>
+      <button class="nav-pill-btn" id="nav-pill-contact" title="Inspect Contact Satellite">
+        <span>📡</span> Comms: Contact
+      </button>
+    </nav>
+
+    <!-- Right: View Switcher Toggle -->
+    <div class="view-switcher" role="radiogroup" aria-label="Layout View">
+      <button class="view-btn active" id="btn-view-cosmos" aria-checked="true" title="Engage 3D Solar System (Press M)">
+        <span>🪐</span> Cosmos <span class="key-badge">M</span>
+      </button>
+      <button class="view-btn" id="btn-view-grid" aria-checked="false" title="Switch to Scannable Grid (Press M)">
+        <span>📋</span> Grid
+      </button>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       COSMOS VIEWPORT (2.5D/3D Interactive Solar System)
+       ===================================================================== -->
+  <main id="cosmos-viewport" aria-label="Interactive Solar System Navigation">
+    <div class="cosmos-pan-container" id="cosmos-pan-container">
+      <div class="solar-anchor" id="solar-anchor">
+
+        <!-- Central Sun: About Me -->
+        <div class="sun-entity" id="sun-core" role="button" tabindex="0" aria-label="The Sun: About Prachi Rajput">
+          <div class="sun-corona"></div>
+          <span class="sun-tag">PRACHI // SUN</span>
+        </div>
+
+        <!-- Orbit 1: Mercury -> PixelSerpent -->
+        <div class="orbit-ring" id="ring-1"></div>
+        <div class="planet-carrier" id="carrier-1">
+          <div class="planet-node p-mercury" id="planet-mercury" role="button" tabindex="0" aria-label="Mercury: PixelSerpent"></div>
+        </div>
+
+        <!-- Orbit 2: Venus -> MeshCraft AI -->
+        <div class="orbit-ring" id="ring-2"></div>
+        <div class="planet-carrier" id="carrier-2">
+          <div class="planet-node p-venus" id="planet-venus" role="button" tabindex="0" aria-label="Venus: MeshCraft AI"></div>
+        </div>
+
+        <!-- Orbit 3: Earth -> PlayZone & Moon A (The Angry East Indian) -->
+        <div class="orbit-ring" id="ring-3"></div>
+        <div class="planet-carrier" id="carrier-3">
+          <div class="planet-node p-earth" id="planet-earth" role="button" tabindex="0" aria-label="Earth: PlayZone Progress Tracker"></div>
+          <div class="moon-carrier" id="moon-carrier-earth">
+            <div class="moon-node" id="moon-angry-indian" role="button" tabindex="0" aria-label="Moon A: The Angry East Indian YouTube Channel" title="YouTube: The Angry East Indian">▶</div>
+          </div>
+        </div>
+
+        <!-- Orbit 4: Mars -> RadZero -->
+        <div class="orbit-ring" id="ring-4"></div>
+        <div class="planet-carrier" id="carrier-4">
+          <div class="planet-node p-mars" id="planet-mars" role="button" tabindex="0" aria-label="Mars: RadZero"></div>
+        </div>
+
+        <!-- Orbit 5: Jupiter -> Legacy Portfolio v1 & Moon B (Lifestyle Channel) -->
+        <div class="orbit-ring" id="ring-5"></div>
+        <div class="planet-carrier" id="carrier-5">
+          <div class="planet-node p-jupiter" id="planet-jupiter" role="button" tabindex="0" aria-label="Jupiter: Legacy Portfolio v1"></div>
+          <div class="moon-carrier" id="moon-carrier-jupiter">
+            <div class="moon-node" id="moon-lifestyle" role="button" tabindex="0" aria-label="Moon B: Beautiful Girls YouTube Channel" title="YouTube: Beautiful Girls">▶</div>
+          </div>
+        </div>
+
+        <!-- Orbit 6: Saturn -> 3D & Game Dev Studio -->
+        <div class="orbit-ring" id="ring-6"></div>
+        <div class="planet-carrier" id="carrier-6">
+          <div class="planet-node p-saturn" id="planet-saturn" role="button" tabindex="0" aria-label="Saturn: 3D and Game Dev Studio">
+            <div class="saturn-ring"></div>
+          </div>
+        </div>
+
+        <!-- Orbit 7: Satellite -> Contact & Social Array -->
+        <div class="orbit-ring" id="ring-7"></div>
+        <div class="planet-carrier" id="carrier-7">
+          <div class="satellite-node" id="satellite-node" role="button" tabindex="0" aria-label="Satellite: Contact Me">
+            <div class="sat-panel"></div>
+            <div class="sat-core"></div>
+            <div class="sat-panel"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating Telemetry Tooltip -->
+  <div id="telemetry-tooltip" class="glass-hud">
+    <div class="tt-title" id="tt-title">Planet Name</div>
+    <div class="tt-tag" id="tt-tag">Technology Tag</div>
+  </div>
+
+  <!-- Bottom Orbital Control Dock (Cosmos View) -->
+  <aside class="bottom-hud-dock glass-hud" id="bottom-dock" aria-label="Cosmos Controls">
+    <button class="dock-btn" id="btn-toggle-play" title="Play / Pause Orbit (Spacebar)">⏸</button>
+    
+    <div class="speed-btn-group" role="group" aria-label="Orbit Speed">
+      <button class="speed-pill" data-speed="0.5">0.5x</button>
+      <button class="speed-pill active" data-speed="1">1x</button>
+      <button class="speed-pill" data-speed="2">2x</button>
+    </div>
+
+    <button class="dock-btn" id="btn-zoom-in" title="Zoom In (+)">+</button>
+    <button class="dock-btn" id="btn-zoom-out" title="Zoom Out (-)">−</button>
+    <button class="dock-btn" id="btn-reset-cam" title="Reset Viewport">⟲</button>
+  </aside>
+
+  <!-- =====================================================================
+       STRUCTURED GRID VIEW (Alternative Viewport)
+       ===================================================================== -->
+  <section id="grid-viewport" aria-label="Structured Portfolio Grid">
+    <!-- Hero / Bio -->
+    <div class="grid-hero glass-hud">
+      <div class="hero-badge">
+        <span style="width:6px;height:6px;border-radius:50%;background:#38BDF8;display:inline-block;"></span>
+        SYSTEM OPERATIONAL // CGC UNIVERSITY, MOHALI
+      </div>
+      <h1 class="hero-name font-display">Prachi Rajput</h1>
+      <p class="hero-title">Software Developer, AI Builder & 3D Creator</p>
+      <p class="hero-bio">
+        First-year B.Tech Computer Science student at CGC University, Mohali, and Technical Team Member at the <strong>D4 Community (Hack-N-Win)</strong>. Passionate about systems programming in C/C++, full-stack WebGL applications, autonomous AI tooling, 3D digital sculpture in Blender, and procedural game development.
+      </p>
+
+      <!-- Skill Categories -->
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-cat">Core Languages</div>
+          <div class="tag-cloud">
+            <span class="tag-item">C</span>
+            <span class="tag-item">C++</span>
+            <span class="tag-item">Java</span>
+            <span class="tag-item">JavaScript (ES6+)</span>
+            <span class="tag-item">HTML5</span>
+            <span class="tag-item">CSS3</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-cat">Web & AI Architectures</div>
+          <div class="tag-cloud">
+            <span class="tag-item">Next.js 14</span>
+            <span class="tag-item">Three.js</span>
+            <span class="tag-item">Tailwind CSS</span>
+            <span class="tag-item">Gemini API</span>
+            <span class="tag-item">OpenAI Node SDK</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-cat">3D, Video & Game Dev</div>
+          <div class="tag-cloud">
+            <span class="tag-item">Blender (Cycles/EEVEE)</span>
+            <span class="tag-item">Godot Engine</span>
+            <span class="tag-item">Unreal Engine</span>
+            <span class="tag-item">DaVinci Resolve</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-cat">Cloud & Deployments</div>
+          <div class="tag-cloud">
+            <span class="tag-item">Git</span>
+            <span class="tag-item">GitHub</span>
+            <span class="tag-item">Vercel</span>
+            <span class="tag-item">Netlify</span>
+            <span class="tag-item">Firebase</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Highlights -->
+      <div style="border-top: 1px solid var(--border-hud); padding-top: 18px;">
+        <div style="font-family: var(--font-mono); font-size: 11px; color: var(--cyan-telemetry); margin-bottom: 8px; font-weight:700;">
+          MISSION MILESTONES & LEADERSHIP
+        </div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--color-text-muted);">
+          <li>✨ <strong>Technical Team Member</strong> — D4 Community (Hack-N-Win Hackathon)</li>
+          <li>✨ <strong>Event Coordinator</strong> — Graviton 2026 Hackathon (CGC University)</li>
+          <li>✨ <strong>Frontend & Mission Control UI Lead</strong> — Aerospace Telemetry Dashboard</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <h2 class="section-heading font-display">
+      <span>🪐</span> Orbital Projects & Missions
+    </h2>
+    <div class="projects-grid" id="grid-projects-container">
+      <!-- Injected dynamically via JavaScript -->
+    </div>
+
+    <!-- Media & YouTube Channels Grid -->
+    <h2 class="section-heading font-display">
+      <span>📡</span> Subspace Broadcasts & Media
+    </h2>
+    <div class="projects-grid">
+      <div class="project-card glass-hud">
+        <span class="proj-badge">YouTube // Tech & Walkthroughs</span>
+        <h3 class="proj-title">The Angry East Indian</h3>
+        <p class="proj-desc">
+          Technical tutorials, C programming deep dives, game dev logs, and unfiltered developer workflows.
+        </p>
+        <div class="card-actions">
+          <a href="https://youtube.com/@theangryeastindian?si=pwVErbKh1PCMsq0x" target="_blank" rel="noopener noreferrer" class="btn-action-primary">
+            Tune In Channel ↗
+          </a>
+        </div>
+      </div>
+
+      <div class="project-card glass-hud">
+        <span class="proj-badge">YouTube // Lifestyle & Storytelling</span>
+        <h3 class="proj-title">Beautiful Girls Channel</h3>
+        <p class="proj-desc">
+          Creative video storytelling, aesthetic lifestyle edits, cinematic visual atmosphere, and cultural logs.
+        </p>
+        <div class="card-actions">
+          <a href="https://youtube.com/@beautifulgirls-x7m?si=1ifuE0DEvw37t5sV" target="_blank" rel="noopener noreferrer" class="btn-action-primary">
+            Tune In Channel ↗
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Section in Grid -->
+    <h2 class="section-heading font-display" id="grid-contact-anchor">
+      <span>🛰️</span> Hailing Frequencies & Contact
+    </h2>
+    <div class="glass-hud" style="padding: 32px; border-radius: 20px;">
+      <!-- Email Copy Card -->
+      <div class="copy-email-card" onclick="copyEmail()">
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 10px; color: var(--cyan-telemetry); margin-bottom: 2px;">
+            PRIMARY EMAIL FREQUENCY (CLICK TO COPY)
+          </div>
+          <div style="font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: #FFFFFF;">
+            rajputprachi3111@gmail.com
+          </div>
+        </div>
+        <div style="font-size: 18px;">📋</div>
+      </div>
+
+      <!-- Social Links -->
+      <div class="social-dock">
+        <a href="https://github.com/rajputprachi3111-netizen" target="_blank" rel="noopener noreferrer" class="social-link-btn">
+          <span>🐙</span> GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/prachi-rajput-bangs" target="_blank" rel="noopener noreferrer" class="social-link-btn">
+          <span>💼</span> LinkedIn
+        </a>
+        <a href="https://x.com/Rosesarerekn" target="_blank" rel="noopener noreferrer" class="social-link-btn">
+          <span>🐦</span> X (Twitter)
+        </a>
+        <a href="https://www.instagram.com/vis463065?jplx=YjRmbHplcTh0b3V4" target="_blank" rel="noopener noreferrer" class="social-link-btn">
+          <span>📷</span> Instagram (Main)
+        </a>
+        <a href="https://www.instagram.com/girlsvibes.7233476?cnvx=ejNrNnd5Y3NoZDZs" target="_blank" rel="noopener noreferrer" class="social-link-btn">
+          <span>🌸</span> Instagram (Vibes)
+        </a>
+        <a href="https://www.snapchat.com/add/theangryeast?share_id=kIBApX2qq00&locale=en-IN" target="_blank" rel="noopener noreferrer" class="social-link-btn">
+          <span>👻</span> Snapchat 1
+        </a>
+      </div>
+
+      <!-- Quick Message Form -->
+      <form class="message-form" onsubmit="handleMessageSubmit(event)">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          <div class="form-group">
+            <label>CALLSIGN / NAME</label>
+            <input type="text" required placeholder="Commander Shepard" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>SUBSPACE EMAIL</label>
+            <input type="email" required placeholder="shepard@normandy.space" class="form-control">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>MISSION OBJECTIVE / TOPIC</label>
+          <select class="form-control">
+            <option>Internship / Hiring</option>
+            <option>Hackathon Collaboration</option>
+            <option>Web / 3D Project</option>
+            <option>Say Hello</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>TRANSMISSION MESSAGE</label>
+          <textarea required placeholder="Enter mission objectives or project inquiries..." class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn-action-primary" style="padding: 12px; cursor: pointer; border: none;">
+          Transmit Message Beam ↗
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       GLASSMORPHIC SLIDE-OVER DRAWER (Sun, Planets, Satellite)
+       ===================================================================== */
+  -->
+  <div class="drawer-scrim" id="drawer-scrim"></div>
+  <aside class="command-drawer" id="command-drawer" aria-hidden="true" role="dialog" aria-labelledby="drawer-title">
+    <div class="drawer-header">
+      <div class="drawer-title-wrap">
+        <div class="drawer-icon" id="drawer-icon">☀️</div>
+        <div>
+          <div style="font-family: var(--font-mono); font-size: 10px; color: var(--cyan-telemetry);" id="drawer-badge">SECTOR TELEMETRY</div>
+          <h2 class="font-display" style="font-size: 18px; font-weight: 700;" id="drawer-title">Command Drawer</h2>
+        </div>
+      </div>
+      <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close drawer">✕</button>
+    </div>
+    <div class="drawer-body" id="drawer-body">
+      <!-- Injected dynamically -->
+    </div>
+  </aside>
+
+  <!-- Toast Notification -->
+  <div id="hud-toast" role="status" aria-live="polite">Copied to clipboard!</div>
+
+  <!-- =====================================================================
+       JAVASCRIPT: 60 FPS ORBIT ENGINE, DRAWERS, AUDIO & HUD LOGIC
+       ===================================================================== -->
+  <script>
+    // ---------------------------------------------------------------------
+    // Data Matrix
+    // ---------------------------------------------------------------------
+    const GITHUB_PROFILE = "https://github.com/rajputprachi3111-netizen";
+
+    const CELESTIAL_BODIES = {
+      sun: {
+        id: "sun",
+        name: "Prachi Rajput",
+        role: "Software Developer, AI Builder & 3D Creator",
+        badge: "CORE HUB // ABOUT ME",
+        icon: "☀️",
+        bio: "First-year B.Tech Computer Science student at CGC University, Mohali, and Technical Team Member at the D4 Community (Hack-N-Win). Passionate about systems programming in C, WebGL interactive graphics, AI developer tooling, and custom 3D digital sculpture in Blender.",
+        skills: [
+          { cat: "Languages", items: ["C", "C++", "Java", "HTML5", "CSS3", "JavaScript"] },
+          { cat: "Web & AI", items: ["Next.js", "Three.js", "Tailwind CSS", "Gemini API", "OpenAI Node SDK"] },
+          { cat: "3D, Video & Games", items: ["Blender (Cycles/EEVEE)", "Godot Engine", "Unreal Engine", "DaVinci Resolve"] },
+          { cat: "Deploy & Tools", items: ["Git", "GitHub", "Vercel", "Netlify", "Firebase"] }
+        ],
+        milestones: [
+          "Technical Team Member — D4 Community (Hack-N-Win Hackathon)",
+          "Event Coordinator — Graviton 2026 Hackathon (CGC University)",
+          "Frontend & Mission Control UI Lead — Aerospace Telemetry Dashboard"
+        ]
+      },
+      mercury: {
+        id: "mercury",
+        title: "PixelSerpent",
+        tag: "C Programming / Web Game",
+        badge: "PLANET 1 // MERCURY",
+        icon: "🎮",
+        desc: "Classic arcade Snake game engineered in pure C with fluid velocity mechanics and compiled/deployed for the web, paired with a complete developer walkthrough tutorial.",
+        liveUrl: "https://pixelserpent.netlify.app/",
+        radius: 110,
+        speed: 1.6,
+        color: "#94A3B8"
+      },
+      venus: {
+        id: "venus",
+        title: "MeshCraft AI",
+        tag: "AI / 3D WebGL",
+        badge: "PLANET 2 // VENUS",
+        icon: "🧠",
+        desc: "Browser-based 2D-to-3D model conversion web application with real-time interactive Three.js viewport, geometry decimation, and multi-format mesh export.",
+        liveUrl: "https://meshcraft-ai.vercel.app/",
+        radius: 165,
+        speed: 1.15,
+        color: "#F59E0B"
+      },
+      earth: {
+        id: "earth",
+        title: "PlayZone / Progress Tracker",
+        tag: "Web App / Productivity",
+        badge: "PLANET 3 // EARTH",
+        icon: "🌍",
+        desc: "Interactive progress tracking and productivity web workspace deployed on Vercel with responsive milestone dashboards and session analytics.",
+        liveUrl: "https://playzone-ruby-sigma.vercel.app/",
+        radius: 225,
+        speed: 0.85,
+        color: "#38BDF8",
+        moonA: {
+          title: "The Angry East Indian",
+          tag: "YouTube // Tech & Coding",
+          url: "https://youtube.com/@theangryeastindian?si=pwVErbKh1PCMsq0x"
+        }
+      },
+      mars: {
+        id: "mars",
+        title: "RadZero",
+        tag: "Firebase / Web Platform",
+        badge: "PLANET 4 // MARS",
+        icon: "🔴",
+        desc: "Firebase-hosted cloud web application demonstrating real-time Firestore database synchronization, cloud authentication, and resilient edge architecture.",
+        liveUrl: "https://radzero.web.app/",
+        radius: 285,
+        speed: 0.65,
+        color: "#EF4444"
+      },
+      jupiter: {
+        id: "jupiter",
+        title: "Legacy Portfolio v1",
+        tag: "Frontend / 3D Showcase",
+        badge: "PLANET 5 // JUPITER",
+        icon: "🪐",
+        desc: "Personal developer portfolio showcasing early programming experiments and custom 3D Blender renders (including realistic 3D Football and procedural Doughnut assets).",
+        liveUrl: "https://prachi-dev-five.vercel.app/",
+        radius: 350,
+        speed: 0.45,
+        color: "#D97706",
+        moonB: {
+          title: "Beautiful Girls Channel",
+          tag: "YouTube // Storytelling & Visuals",
+          url: "https://youtube.com/@beautifulgirls-x7m?si=1ifuE0DEvw37t5sV"
+        }
+      },
+      saturn: {
+        id: "saturn",
+        title: "3D & Game Dev Studio",
+        tag: "Blender / Godot / Unreal Engine",
+        badge: "PLANET 6 // SATURN",
+        icon: "🌌",
+        desc: "Custom hard-surface 3D modeling and photorealistic rendering in Blender, alongside 3D PC game prototypes engineered in Godot Engine and Unreal Engine.",
+        liveUrl: GITHUB_PROFILE,
+        radius: 415,
+        speed: 0.32,
+        color: "#FB923C"
+      },
+      satellite: {
+        id: "satellite",
+        title: "Comms Array & Contact",
+        tag: "Subspace Transmission Hub",
+        badge: "OUTER SATELLITE // CONTACT",
+        icon: "📡",
+        radius: 475,
+        speed: 0.22
+      }
+    };
+
+    // ---------------------------------------------------------------------
+    // Starfield Canvas Background (Twinkling & Depth)
+    // ---------------------------------------------------------------------
+    const canvas = document.getElementById("starfield-canvas");
+    const ctx = canvas.getContext("2d");
+    let stars = [];
+    const STAR_COUNT = 240;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initStars();
+    }
+
+    function initStars() {
+      stars = [];
+      for (let i = 0; i < STAR_COUNT; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 1.5 + 0.4,
+          alpha: Math.random() * 0.8 + 0.2,
+          speed: Math.random() * 0.02 + 0.005,
+          color: Math.random() > 0.3 ? "#FFFFFF" : (Math.random() > 0.5 ? "#38BDF8" : "#FDE68A")
+        });
+      }
+    }
+
+    function renderStarfield() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const star of stars) {
+        star.alpha += Math.sin(Date.now() * star.speed) * 0.015;
+        if (star.alpha > 1) star.alpha = 1;
+        if (star.alpha < 0.15) star.alpha = 0.15;
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = star.color;
+        ctx.globalAlpha = star.alpha;
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(renderStarfield);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+    renderStarfield();
+
+    // ---------------------------------------------------------------------
+    // 60 FPS Orbit Engine (GPU transform translate3d, No Layout Thrashing)
+    // ---------------------------------------------------------------------
+    let isOrbitPaused = false;
+    let orbitSpeedMultiplier = 1;
+    let panX = 0, panY = 0;
+    let zoomLevel = window.innerWidth <= 1024 ? 0.75 : 1;
+    let isDragging = false;
+    let startX = 0, startY = 0;
+
+    const panContainer = document.getElementById("cosmos-pan-container");
+    const planetsList = [
+      { key: "mercury", carrier: document.getElementById("carrier-1"), ring: document.getElementById("ring-1"), angle: 0 },
+      { key: "venus", carrier: document.getElementById("carrier-2"), ring: document.getElementById("ring-2"), angle: 1.2 },
+      { key: "earth", carrier: document.getElementById("carrier-3"), ring: document.getElementById("ring-3"), angle: 2.4 },
+      { key: "mars", carrier: document.getElementById("carrier-4"), ring: document.getElementById("ring-4"), angle: 3.6 },
+      { key: "jupiter", carrier: document.getElementById("carrier-5"), ring: document.getElementById("ring-5"), angle: 4.5 },
+      { key: "saturn", carrier: document.getElementById("carrier-6"), ring: document.getElementById("ring-6"), angle: 5.4 },
+      { key: "satellite", carrier: document.getElementById("carrier-7"), ring: document.getElementById("ring-7"), angle: 0.8 }
+    ];
+
+    const moonEarthCarrier = document.getElementById("moon-carrier-earth");
+    const moonJupiterCarrier = document.getElementById("moon-carrier-jupiter");
+    let moonEarthAngle = 0;
+    let moonJupiterAngle = 0;
+
+    // Apply Orbit Ring Radii
+    function applyOrbitRadii() {
+      planetsList.forEach((p) => {
+        const body = CELESTIAL_BODIES[p.key];
+        const diameter = body.radius * 2;
+        p.ring.style.width = diameter + "px";
+        p.ring.style.height = diameter + "px";
+      });
+    }
+    applyOrbitRadii();
+
+    let hoveredPlanetKey = null;
+
+    let lastFrameTime = performance.now();
+    function orbitLoop(now) {
+      const delta = (now - lastFrameTime) / 1000;
+      lastFrameTime = now;
+
+      const isMobile = window.innerWidth < 768;
+
+      if (!isOrbitPaused && !isMobile) {
+        planetsList.forEach((p) => {
+          const body = CELESTIAL_BODIES[p.key];
+          // Slow down motion if hovered
+          const localSpeed = hoveredPlanetKey === p.key ? body.speed * 0.15 : body.speed;
+          p.angle += localSpeed * 0.45 * orbitSpeedMultiplier * delta;
+
+          // GPU-accelerated translate3d
+          const x = Math.cos(p.angle) * body.radius;
+          const y = Math.sin(p.angle) * body.radius;
+          p.carrier.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        });
+
+        // Orbiting Moons
+        moonEarthAngle += 2.2 * delta;
+        const mx1 = Math.cos(moonEarthAngle) * 28;
+        const my1 = Math.sin(moonEarthAngle) * 28;
+        moonEarthCarrier.style.transform = `translate3d(${mx1}px, ${my1}px, 0)`;
+
+        moonJupiterAngle += 1.8 * delta;
+        const mx2 = Math.cos(moonJupiterAngle) * 36;
+        const my2 = Math.sin(moonJupiterAngle) * 36;
+        moonJupiterCarrier.style.transform = `translate3d(${mx2}px, ${my2}px, 0)`;
+      }
+
+      requestAnimationFrame(orbitLoop);
+    }
+    requestAnimationFrame(orbitLoop);
+
+    // ---------------------------------------------------------------------
+    // Viewport Panning & Zoom Controls
+    // ---------------------------------------------------------------------
+    function updateTransform() {
+      if (window.innerWidth < 768) {
+        panContainer.style.transform = "none";
+        return;
+      }
+      panContainer.style.transform = `translate3d(${panX}px, ${panY}px, 0) scale(${zoomLevel})`;
+    }
+
+    const cosmosViewport = document.getElementById("cosmos-viewport");
+    cosmosViewport.addEventListener("mousedown", (e) => {
+      if (e.target.closest(".planet-node, .sun-entity, .moon-node, .satellite-node, .bottom-hud-dock")) return;
+      isDragging = true;
+      startX = e.clientX - panX;
+      startY = e.clientY - panY;
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      panX = e.clientX - startX;
+      panY = e.clientY - startY;
+      updateTransform();
+    });
+
+    window.addEventListener("mouseup", () => { isDragging = false; });
+
+    // Mouse Wheel Zoom
+    cosmosViewport.addEventListener("wheel", (e) => {
+      if (window.innerWidth < 768) return;
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.08 : 0.92;
+      zoomLevel = Math.max(0.45, Math.min(2.2, zoomLevel * zoomFactor));
+      updateTransform();
+    }, { passive: false });
+
+    // Dock Buttons
+    document.getElementById("btn-zoom-in").addEventListener("click", () => {
+      zoomLevel = Math.min(2.2, zoomLevel * 1.15);
+      updateTransform();
+    });
+    document.getElementById("btn-zoom-out").addEventListener("click", () => {
+      zoomLevel = Math.max(0.45, zoomLevel * 0.85);
+      updateTransform();
+    });
+    document.getElementById("btn-reset-cam").addEventListener("click", () => {
+      panX = 0;
+      panY = 0;
+      zoomLevel = window.innerWidth <= 1024 ? 0.75 : 1;
+      updateTransform();
+    });
+
+    // Play/Pause Orbit
+    const btnTogglePlay = document.getElementById("btn-toggle-play");
+    function togglePlayPause() {
+      isOrbitPaused = !isOrbitPaused;
+      btnTogglePlay.textContent = isOrbitPaused ? "▶" : "⏸";
+      btnTogglePlay.title = isOrbitPaused ? "Resume Orbit (Spacebar)" : "Pause Orbit (Spacebar)";
+    }
+    btnTogglePlay.addEventListener("click", togglePlayPause);
+
+    // Speed Selector
+    document.querySelectorAll(".speed-pill").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".speed-pill").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        orbitSpeedMultiplier = parseFloat(btn.dataset.speed);
+      });
+    });
+
+    // ---------------------------------------------------------------------
+    // Hover Tooltips & Ring Highlights
+    // ---------------------------------------------------------------------
+    const tooltip = document.getElementById("telemetry-tooltip");
+    const ttTitle = document.getElementById("tt-title");
+    const ttTag = document.getElementById("tt-tag");
+
+    function setupPlanetHover(element, bodyKey, ringId) {
+      const ring = ringId ? document.getElementById(ringId) : null;
+      const body = CELESTIAL_BODIES[bodyKey];
+
+      element.addEventListener("mouseenter", (e) => {
+        hoveredPlanetKey = bodyKey;
+        if (ring) ring.classList.add("highlighted");
+
+        ttTitle.textContent = body.title || body.name;
+        ttTag.textContent = body.tag || body.role;
+        tooltip.classList.add("visible");
+      });
+
+      element.addEventListener("mousemove", (e) => {
+        tooltip.style.left = e.clientX + "px";
+        tooltip.style.top = e.clientY + "px";
+      });
+
+      element.addEventListener("mouseleave", () => {
+        hoveredPlanetKey = null;
+        if (ring) ring.classList.remove("highlighted");
+        tooltip.classList.remove("visible");
+      });
+    }
+
+    setupPlanetHover(document.getElementById("planet-mercury"), "mercury", "ring-1");
+    setupPlanetHover(document.getElementById("planet-venus"), "venus", "ring-2");
+    setupPlanetHover(document.getElementById("planet-earth"), "earth", "ring-3");
+    setupPlanetHover(document.getElementById("planet-mars"), "mars", "ring-4");
+    setupPlanetHover(document.getElementById("planet-jupiter"), "jupiter", "ring-5");
+    setupPlanetHover(document.getElementById("planet-saturn"), "saturn", "ring-6");
+    setupPlanetHover(document.getElementById("satellite-node"), "satellite", "ring-7");
+
+    // ---------------------------------------------------------------------
+    // Slide-Over & Bottom-Sheet Command Drawers
+    // ---------------------------------------------------------------------
+    const drawer = document.getElementById("command-drawer");
+    const scrim = document.getElementById("drawer-scrim");
+    const drawerBody = document.getElementById("drawer-body");
+    const drawerTitle = document.getElementById("drawer-title");
+    const drawerBadge = document.getElementById("drawer-badge");
+    const drawerIcon = document.getElementById("drawer-icon");
+    const closeBtn = document.getElementById("drawer-close-btn");
+
+    function openDrawer(type) {
+      if (type === "sun") {
+        const d = CELESTIAL_BODIES.sun;
+        drawerBadge.textContent = d.badge;
+        drawerTitle.textContent = d.name;
+        drawerIcon.textContent = d.icon;
+        drawerIcon.style.background = "rgba(245, 158, 11, 0.2)";
+
+        drawerBody.innerHTML = `
+          <div style="font-family: var(--font-mono); font-size: 13px; color: var(--cyan-telemetry); margin-bottom: 12px; font-weight:600;">
+            ${d.role}
+          </div>
+          <p style="font-size: 14px; line-height: 1.7; color: var(--color-text-muted); margin-bottom: 24px;">
+            ${d.bio}
+          </p>
+
+          <div style="margin-bottom: 24px;">
+            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--cyan-telemetry); font-weight: 700; margin-bottom: 12px; text-transform: uppercase;">
+              TECHNICAL ARSENAL
+            </div>
+            ${d.skills.map(s => `
+              <div style="margin-bottom: 12px;">
+                <div style="font-size: 11px; font-family: var(--font-mono); color: #FFFFFF; margin-bottom: 4px;">${s.cat}</div>
+                <div class="tag-cloud">
+                  ${s.items.map(it => `<span class="tag-item">${it}</span>`).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="border-top: 1px solid var(--border-hud); padding-top: 16px; margin-bottom: 24px;">
+            <div style="font-family: var(--font-mono); font-size: 11px; color: var(--cyan-telemetry); font-weight: 700; margin-bottom: 10px; text-transform: uppercase;">
+              ACADEMIC & HACKATHON HIGHLIGHTS
+            </div>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--color-text-muted);">
+              ${d.milestones.map(m => `<li>⭐ ${m}</li>`).join('')}
+            </ul>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <a href="${GITHUB_PROFILE}" target="_blank" rel="noopener noreferrer" class="btn-action-primary">
+              GitHub Matrix ↗
+            </a>
+            <button onclick="openDrawer('satellite')" class="btn-action-secondary">
+              Hail Contact 📡
+            </button>
+          </div>
+        `;
+      } else if (type === "satellite") {
+        drawerBadge.textContent = "OUTER SATELLITE // HAILING FREQUENCIES";
+        drawerTitle.textContent = "Contact & Communications";
+        drawerIcon.textContent = "📡";
+        drawerIcon.style.background = "rgba(56, 189, 248, 0.2)";
+
+        drawerBody.innerHTML = `
+          <div class="copy-email-card" onclick="copyEmail()">
+            <div>
+              <div style="font-family: var(--font-mono); font-size: 10px; color: var(--cyan-telemetry);">
+                CLICK TO COPY EMAIL
+              </div>
+              <div style="font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: #FFFFFF;">
+                rajputprachi3111@gmail.com
+              </div>
+            </div>
+            <div>📋</div>
+          </div>
+
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--cyan-telemetry); font-weight: 700; margin-bottom: 10px;">
+            PRIMARY CHANNELS
+          </div>
+          <div class="social-dock">
+            <a href="${GITHUB_PROFILE}" target="_blank" rel="noopener noreferrer" class="social-link-btn">
+              <span>🐙</span> GitHub
+            </a>
+            <a href="https://www.linkedin.com/in/prachi-rajput-bangs" target="_blank" rel="noopener noreferrer" class="social-link-btn">
+              <span>💼</span> LinkedIn
+            </a>
+            <a href="https://x.com/Rosesarerekn" target="_blank" rel="noopener noreferrer" class="social-link-btn">
+              <span>🐦</span> X (Twitter)
+            </a>
+            <a href="https://www.instagram.com/vis463065?jplx=YjRmbHplcTh0b3V4" target="_blank" rel="noopener noreferrer" class="social-link-btn">
+              <span>📷</span> Instagram
+            </a>
+          </div>
+
+          <div style="font-family: var(--font-mono); font-size: 11px; color: var(--cyan-telemetry); font-weight: 700; margin-bottom: 10px;">
+            TRANSMIT QUICK MESSAGE
+          </div>
+          <form class="message-form" onsubmit="handleMessageSubmit(event)">
+            <div class="form-group">
+              <label>OPERATOR CALLSIGN / NAME</label>
+              <input type="text" required placeholder="Commander Shepard" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>RETURN FREQUENCY / EMAIL</label>
+              <input type="email" required placeholder="shepard@alliance.space" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>MISSION TOPIC</label>
+              <select class="form-control">
+                <option>Internship / Hiring</option>
+                <option>Hackathon Collaboration</option>
+                <option>Web / 3D Project</option>
+                <option>Say Hello</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>PAYLOAD MESSAGE</label>
+              <textarea required placeholder="Enter message or mission objective..." class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn-action-primary" style="padding: 12px; border:none; cursor:pointer;">
+              Transmit Signal Beam ↗
+            </button>
+          </form>
+        `;
+      } else {
+        // Individual Planet
+        const p = CELESTIAL_BODIES[type];
+        if (!p) return;
+
+        drawerBadge.textContent = p.badge;
+        drawerTitle.textContent = p.title;
+        drawerIcon.textContent = p.icon;
+        drawerIcon.style.background = "rgba(56, 189, 248, 0.2)";
+
+        drawerBody.innerHTML = `
+          <div style="font-family: var(--font-mono); font-size: 12px; color: var(--cyan-telemetry); margin-bottom: 14px;">
+            ${p.tag}
+          </div>
+          <p style="font-size: 14px; line-height: 1.7; color: var(--color-text-muted); margin-bottom: 24px;">
+            ${p.desc}
+          </p>
+
+          ${p.moonA ? `
+            <div style="padding: 14px; border-radius: 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.35); margin-bottom: 20px;">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: #FCA5A5; margin-bottom: 2px;">ORBITING MOON A // BROADCAST</div>
+              <div style="font-weight: 700; color: #FFFFFF; font-size: 14px; margin-bottom: 4px;">${p.moonA.title}</div>
+              <p style="font-size: 12px; color: var(--color-text-muted); margin-bottom: 10px;">${p.moonA.tag}</p>
+              <a href="${p.moonA.url}" target="_blank" rel="noopener noreferrer" class="btn-action-secondary" style="font-size: 11px; padding: 6px 12px;">
+                Tune In YouTube ▶
+              </a>
+            </div>
+          ` : ''}
+
+          ${p.moonB ? `
+            <div style="padding: 14px; border-radius: 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.35); margin-bottom: 20px;">
+              <div style="font-family: var(--font-mono); font-size: 10px; color: #FCA5A5; margin-bottom: 2px;">ORBITING MOON B // BROADCAST</div>
+              <div style="font-weight: 700; color: #FFFFFF; font-size: 14px; margin-bottom: 4px;">${p.moonB.title}</div>
+              <p style="font-size: 12px; color: var(--color-text-muted); margin-bottom: 10px;">${p.moonB.tag}</p>
+              <a href="${p.moonB.url}" target="_blank" rel="noopener noreferrer" class="btn-action-secondary" style="font-size: 11px; padding: 6px 12px;">
+                Tune In YouTube ▶
+              </a>
+            </div>
+          ` : ''}
+
+          <div style="display: flex; gap: 10px; margin-top: 24px;">
+            <a href="${p.liveUrl}" target="_blank" rel="noopener noreferrer" class="btn-action-primary">
+              Launch Live App ↗
+            </a>
+            <a href="${GITHUB_PROFILE}" target="_blank" rel="noopener noreferrer" class="btn-action-secondary">
+              GitHub Profile ↗
+            </a>
+          </div>
+        `;
+      }
+
+      drawer.classList.add("open");
+      scrim.classList.add("open");
+      drawer.setAttribute("aria-hidden", "false");
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove("open");
+      scrim.classList.remove("open");
+      drawer.setAttribute("aria-hidden", "true");
+    }
+
+    closeBtn.addEventListener("click", closeDrawer);
+    scrim.addEventListener("click", closeDrawer);
+
+    // Celestial Click Events
+    document.getElementById("sun-core").addEventListener("click", () => openDrawer("sun"));
+    document.getElementById("planet-mercury").addEventListener("click", () => openDrawer("mercury"));
+    document.getElementById("planet-venus").addEventListener("click", () => openDrawer("venus"));
+    document.getElementById("planet-earth").addEventListener("click", () => openDrawer("earth"));
+    document.getElementById("planet-mars").addEventListener("click", () => openDrawer("mars"));
+    document.getElementById("planet-jupiter").addEventListener("click", () => openDrawer("jupiter"));
+    document.getElementById("planet-saturn").addEventListener("click", () => openDrawer("saturn"));
+    document.getElementById("satellite-node").addEventListener("click", () => openDrawer("satellite"));
+
+    document.getElementById("moon-angry-indian").addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.open("https://youtube.com/@theangryeastindian?si=pwVErbKh1PCMsq0x", "_blank", "noopener,noreferrer");
+    });
+    document.getElementById("moon-lifestyle").addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.open("https://youtube.com/@beautifulgirls-x7m?si=1ifuE0DEvw37t5sV", "_blank", "noopener,noreferrer");
+    });
+
+    // Top Navigation Pills
+    document.getElementById("nav-pill-sun").addEventListener("click", () => openDrawer("sun"));
+    document.getElementById("nav-pill-work").addEventListener("click", () => {
+      if (document.body.classList.contains("grid-active")) {
+        document.getElementById("grid-projects-container").scrollIntoView({ behavior: "smooth" });
+      } else {
+        openDrawer("venus"); // Open featured project
+      }
+    });
+    document.getElementById("nav-pill-contact").addEventListener("click", () => {
+      if (document.body.classList.contains("grid-active")) {
+        document.getElementById("grid-contact-anchor").scrollIntoView({ behavior: "smooth" });
+      } else {
+        openDrawer("satellite");
+      }
+    });
+
+    // ---------------------------------------------------------------------
+    // View Switcher (Cosmos View vs. Grid View)
+    // ---------------------------------------------------------------------
+    const btnViewCosmos = document.getElementById("btn-view-cosmos");
+    const btnViewGrid = document.getElementById("btn-view-grid");
+    const gridViewport = document.getElementById("grid-viewport");
+    const cosmosViewEl = document.getElementById("cosmos-viewport");
+    const bottomDock = document.getElementById("bottom-dock");
+
+    function setView(view) {
+      if (view === "grid") {
+        document.body.classList.remove("cosmos-active");
+        document.body.classList.add("grid-active");
+        cosmosViewEl.style.display = "none";
+        bottomDock.style.display = "none";
+        gridViewport.classList.add("active");
+
+        btnViewGrid.classList.add("active");
+        btnViewGrid.setAttribute("aria-checked", "true");
+        btnViewCosmos.classList.remove("active");
+        btnViewCosmos.setAttribute("aria-checked", "false");
+      } else {
+        document.body.classList.remove("grid-active");
+        document.body.classList.add("cosmos-active");
+        cosmosViewEl.style.display = "flex";
+        bottomDock.style.display = "flex";
+        gridViewport.classList.remove("active");
+
+        btnViewCosmos.classList.add("active");
+        btnViewCosmos.setAttribute("aria-checked", "true");
+        btnViewGrid.classList.remove("active");
+        btnViewGrid.setAttribute("aria-checked", "false");
+        updateTransform();
+      }
+    }
+
+    btnViewCosmos.addEventListener("click", () => setView("cosmos"));
+    btnViewGrid.addEventListener("click", () => setView("grid"));
+
+    // Populate Grid Projects dynamically
+    const gridContainer = document.getElementById("grid-projects-container");
+    const planetKeys = ["mercury", "venus", "earth", "mars", "jupiter", "saturn"];
+    planetKeys.forEach((key) => {
+      const p = CELESTIAL_BODIES[key];
+      const card = document.createElement("div");
+      card.className = "project-card glass-hud";
+      card.innerHTML = `
+        <div>
+          <span class="proj-badge">${p.tag}</span>
+          <h3 class="proj-title">${p.title}</h3>
+          <p class="proj-desc">${p.desc}</p>
+        </div>
+        <div class="card-actions">
+          <a href="${p.liveUrl}" target="_blank" rel="noopener noreferrer" class="btn-action-primary">
+            Launch Live App ↗
+          </a>
+          <button onclick="openDrawer('${key}')" class="btn-action-secondary">
+            Inspect ℹ️
+          </button>
+        </div>
+      `;
+      gridContainer.appendChild(card);
+    });
+
+    // ---------------------------------------------------------------------
+    // Clipboard & Form Handling
+    // ---------------------------------------------------------------------
+    const toast = document.getElementById("hud-toast");
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add("visible");
+      setTimeout(() => {
+        toast.classList.remove("visible");
+      }, 2500);
+    }
+
+    function copyEmail() {
+      navigator.clipboard.writeText("rajputprachi3111@gmail.com").then(() => {
+        showToast("Copied to clipboard: rajputprachi3111@gmail.com");
+      }).catch(() => {
+        showToast("Email: rajputprachi3111@gmail.com");
+      });
+    }
+
+    function handleMessageSubmit(e) {
+      e.preventDefault();
+      showToast("Transmission beam dispatched! Prachi will respond soon.");
+      e.target.reset();
+    }
+
+    // ---------------------------------------------------------------------
+    // Keyboard Navigation (Esc to close, M for View Switcher, Space to Pause)
+    // ---------------------------------------------------------------------
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeDrawer();
+      } else if (e.key === "m" || e.key === "M") {
+        if (!e.target.closest("input, textarea, select")) {
+          const isGrid = document.body.classList.contains("grid-active");
+          setView(isGrid ? "cosmos" : "grid");
+        }
+      } else if (e.code === "Space") {
+        if (!e.target.closest("input, textarea, select") && !document.body.classList.contains("grid-active")) {
+          e.preventDefault();
+          togglePlayPause();
+        }
+      }
+    });
+  </script>
+</body>
 </html>
